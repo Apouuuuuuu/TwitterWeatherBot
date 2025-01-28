@@ -9,10 +9,10 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_SECRET,
 });
 
+// 📌 Fonction pour poster un tweet
 async function postTweet(message) {
   try {
-    // Check if we use client with user access
-    const rwClient = client.readWrite; // assure that we have read-write access
+    const rwClient = client.readWrite; // Assurer l'accès en écriture
     await rwClient.v2.tweet(message);
     console.log("✅ Tweet sent successfully!");
   } catch (error) {
