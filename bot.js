@@ -1,5 +1,5 @@
 import getSortedWeather from "./utils/weather.js";
-import { postTweet } from "./utils/twitter.js";
+import { postTweet, getTweetLimit } from "./utils/twitter.js";
 
 async function tweetWeather() {
   console.log("🔄 Fetching weather data...");
@@ -15,9 +15,13 @@ async function tweetWeather() {
   }
 
   let lastTweetId = null;
+  
+  // 📌 Récupérer la limite de tweets disponible
+  let remainingTweets = await getTweetLimit();
 
-  // 📌 Publier chaque tweet en réponse au précédent pour créer un thread
-  for (let i = 0; i < tweetChunks.length; i++) {
+  console.log(`ℹ️ Il reste ${remainingTweets} tweets disponibles pour aujourd’hui.`);
+
+  for (let i = 0; i < tweetChunks.length && remainingTweets > 0; i++) {
     let tweetMessage = i === 0
       ? `📊 Températures en France :\n\n`
       : `📊 Suite des températures :\n\n`;
@@ -26,13 +30,22 @@ async function tweetWeather() {
       tweetMessage += `${line}\n`;
     });
 
-    console.log(`📢 Posting tweet ${i + 1}...`);
-    
-    // 📌 Envoyer le tweet en réponse au précédent si ce n'est pas le premier
+    console.log(`📢 Envoi du tweet ${i + 1}...`);
+
+    if (remainingTweets <= 0) {
+      console.log("❌ Limite de tweets atteinte. Arrêt de l’envoi.");
+      break;
+    }
+
     lastTweetId = await postTweet(tweetMessage, lastTweetId);
+
+    remainingTweets--; // Diminue le compteur après chaque tweet
+
+    // 📌 Attendre 30 secondes entre chaque tweet pour éviter un blocage immédiat
+    await new Promise(resolve => setTimeout(resolve, 30000)); 
   }
 
-  console.log("✅ Full weather thread posted!");
+  console.log("✅ Tous les tweets ont été envoyés !");
 }
 
 // 📌 Exécuter le bot
