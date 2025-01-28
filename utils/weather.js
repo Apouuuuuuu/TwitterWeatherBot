@@ -2,10 +2,16 @@ import fetch from "node-fetch";
 
 const apiKey = "b7c12a6c33cc45b39b2104806252801"; // Remplace par ta vraie clé API
 
-// 📌 Liste limitée aux plus grandes villes françaises
+// 📌 Liste des villes classées par population décroissante (Paris -> Nancy)
 const cities = [
-  "Paris", "Marseille", "Lyon", "Toulouse", "Nice",
-  "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille"
+  "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes",
+  "Strasbourg", "Montpellier", "Bordeaux", "Lille", "Rennes",
+  "Reims", "Le Havre", "Saint-Étienne", "Toulon", "Grenoble",
+  "Dijon", "Angers", "Nîmes", "Villeurbanne", "Clermont-Ferrand",
+  "Saint-Denis", "Le Mans", "Aix-en-Provence", "Brest", "Tours",
+  "Amiens", "Limoges", "Annecy", "Perpignan", "Boulogne-Billancourt",
+  "Metz", "Besançon", "Orléans", "Saint-Denis (Réunion)", "Rouen",
+  "Argenteuil", "Mulhouse", "Montreuil", "Caen", "Nancy"
 ];
 
 // 📌 Fonction pour récupérer la météo d'une ville
@@ -41,14 +47,13 @@ function getWeatherEmoji(condition) {
   return "❓"; // Si aucune correspondance trouvée
 }
 
-// 📌 Fonction pour récupérer et trier la météo des villes
+// 📌 Fonction pour récupérer la météo des villes (sans tri par température)
 async function getSortedWeather() {
   const weatherData = await Promise.all(cities.map(getWeather));
 
   return weatherData
     .filter((data) => data !== null) // Supprimer les erreurs
-    .sort((a, b) => b.temperature - a.temperature) // Trier du plus chaud au plus froid
-    .map(city => `${city.name}: ${city.temperature}°C ${city.emoji}`);
+    .map(city => `${city.name}: ${city.temperature}°C ${city.emoji}`); // Ne pas trier, garder l'ordre des villes
 }
 
-export { getSortedWeather };
+export default getSortedWeather;
