@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config(); 
 
-const apiKey = "b7c12a6c33cc45b39b2104806252801"; // Remplace par ta vraie clé API
+const apiKey = process.env.WEATHER_API_KEY; // Use API key from .env
 
 // Cities
 const cities = [
@@ -49,6 +51,11 @@ const cities = [
 
 // Get weather data for a city
 async function getWeather(city) {
+  if (!apiKey) {
+    console.error("❌ WEATHER_API_KEY is missing in .env file!");
+    return null;
+  }
+
   const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
 
   try {
