@@ -4,10 +4,10 @@ import { postTweet, getTweetLimit } from "./utils/twitter.js";
 async function tweetWeather() {
   console.log("🔄 Fetching weather data...");
 
-  // 📌 Récupérer la météo classée par population (ordre inchangé)
+  // Get the weather data for all cities
   const weatherUpdate = await getSortedWeather();
 
-  // 📌 Découper en plusieurs tweets (8 villes max par tweet)
+  // Cut in chunks of 8 cities
   const chunkSize = 8;
   const tweetChunks = [];
   for (let i = 0; i < weatherUpdate.length; i += chunkSize) {
@@ -16,7 +16,7 @@ async function tweetWeather() {
 
   let lastTweetId = null;
   
-  // 📌 Récupérer la limite de tweets disponible
+  // Get the remaining tweets for today
   let remainingTweets = await getTweetLimit();
 
   console.log(`ℹ️ Il reste ${remainingTweets} tweets disponibles pour aujourd’hui.`);
@@ -39,10 +39,10 @@ async function tweetWeather() {
 
     lastTweetId = await postTweet(tweetMessage, lastTweetId);
 
-    remainingTweets--; // Diminue le compteur après chaque tweet
+    remainingTweets--; // Decrement the remaining tweets
 
-    // 📌 Attendre 30 secondes entre chaque tweet pour éviter un blocage immédiat
-    await new Promise(resolve => setTimeout(resolve, 30000)); 
+    // Wait 5sc between each tweet to avoid blocking by API
+    await new Promise(resolve => setTimeout(resolve, 5000)); 
   }
 
   console.log("✅ Tous les tweets ont été envoyés !");

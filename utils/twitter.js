@@ -9,14 +9,14 @@ const client = new TwitterApi({
   accessSecret: process.env.TWITTER_ACCESS_SECRET,
 });
 
-// 📌 Fonction pour vérifier la limite de tweets restants
+// Check the remaining tweets limit
 async function getTweetLimit() {
   try {
     const response = await client.v2.get("tweets");
     const rateLimit = response.rateLimit;
 
     if (rateLimit && rateLimit.day) {
-      return rateLimit.day.remaining; // ✅ Nombre de tweets restants
+      return rateLimit.day.remaining; // Remaining tweets for the day
     } else {
       console.log("⚠️ Impossible de récupérer la limite de tweets.");
       return 0;
@@ -27,7 +27,7 @@ async function getTweetLimit() {
   }
 }
 
-// 📌 Fonction pour poster un tweet (et vérifier la limite avant)
+// Function to post a tweet
 async function postTweet(message, replyTo = null) {
   try {
     const remainingTweets = await getTweetLimit();
@@ -41,7 +41,7 @@ async function postTweet(message, replyTo = null) {
     const tweet = await rwClient.v2.tweet(message, replyTo ? { reply: { in_reply_to_tweet_id: replyTo } } : {});
     
     console.log("✅ Tweet posté avec succès !");
-    return tweet.data.id; // Retourne l'ID du tweet pour lier les réponses
+    return tweet.data.id; // Return the tweet ID for link responses
   } catch (error) {
     console.error("❌ Erreur lors de l'envoi du tweet :", error);
     return null;
