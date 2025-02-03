@@ -73,22 +73,34 @@ async function getWeather(city) {
   }
 }
 
-// Function to get the weather emoji based on the condition
 function getWeatherEmoji(condition) {
   const conditionLower = condition.toLowerCase();
 
-  if (conditionLower.includes("clear") || conditionLower.includes("sunny"))
-    return "☀️";
-  if (conditionLower.includes("cloud")) return "⛅";
-  if (conditionLower.includes("fog") || conditionLower.includes("mist"))
-    return "🌫️";
-  if (conditionLower.includes("rain") || conditionLower.includes("drizzle"))
-    return "🌧️";
+  if (conditionLower.includes("clear") || conditionLower.includes("sunny")) return "☀️";
+  if (conditionLower.includes("cloudy")) return "☁️";
+  if (conditionLower.includes("partly cloudy")) return "⛅";
+  if (conditionLower.includes("overcast")) return "🌥️";
+  if (conditionLower.includes("fog") || conditionLower.includes("mist") || conditionLower.includes("haze")) return "🌫️";
+  if (conditionLower.includes("rain") || conditionLower.includes("drizzle") || conditionLower.includes("showers")) return "🌧️";
+  if (conditionLower.includes("light rain")) return "🌦️";
+  if (conditionLower.includes("heavy rain") || conditionLower.includes("torrential rain")) return "🌊";
   if (conditionLower.includes("snow")) return "❄️";
-  if (conditionLower.includes("thunderstorm")) return "⛈️";
+  if (conditionLower.includes("light snow")) return "🌨️";
+  if (conditionLower.includes("heavy snow") || conditionLower.includes("blizzard")) return "🌬️❄️";
+  if (conditionLower.includes("thunderstorm") || conditionLower.includes("storm")) return "⛈️";
+  if (conditionLower.includes("hail")) return "🌨️⚪";
+  if (conditionLower.includes("sleet")) return "🌧️❄️";
+  if (conditionLower.includes("wind") || conditionLower.includes("breezy")) return "💨";
+  if (conditionLower.includes("hot") || conditionLower.includes("heatwave")) return "🔥";
+  if (conditionLower.includes("cold") || conditionLower.includes("freezing")) return "🧊";
+  if (conditionLower.includes("tornado")) return "🌪️";
+  if (conditionLower.includes("hurricane") || conditionLower.includes("cyclone")) return "🌀";
+  if (conditionLower.includes("smoke")) return "🔥🌫️";
+  if (conditionLower.includes("dust") || conditionLower.includes("sandstorm")) return "🏜️";
 
-  return "❓"; // Unknown weather
+  return "❓"; // unknow condition
 }
+
 
 // Function to get the weather for all cities
 async function getSortedWeather() {
@@ -96,7 +108,7 @@ async function getSortedWeather() {
 
   return weatherData
     .filter((data) => data !== null) // Delete null values
-    .map((city) => `${city.name}: ${city.temperature}°C ${city.emoji}`); // Format the data
+    .map((city) => `${city.name} : ${city.temperature}°C ${city.emoji}`); // Format the data
 }
 
 export default getSortedWeather;
