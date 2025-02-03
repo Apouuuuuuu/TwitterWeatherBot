@@ -1,0 +1,5 @@
+{
+    "conventionalCommits.scopes": [
+        "Remove the check tweet limit per day"
+    ]
+}

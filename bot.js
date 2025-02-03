@@ -1,5 +1,5 @@
 import getSortedWeather from "./utils/weather.js";
-import { postTweet, getTweetLimit } from "./utils/twitter.js";
+import { postTweet } from "./utils/twitter.js";
 
 async function tweetWeather() {
   console.log("🔄 Fetching weather data...");
@@ -15,13 +15,8 @@ async function tweetWeather() {
   }
 
   let lastTweetId = null;
-  
-  // Get the remaining tweets for today
-  let remainingTweets = await getTweetLimit();
 
-  console.log(`ℹ️ Il reste ${remainingTweets} tweets disponibles pour aujourd’hui.`);
-
-  for (let i = 0; i < tweetChunks.length && remainingTweets > 0; i++) {
+  for (let i = 0; i < tweetChunks.length; i++) {
     let tweetMessage = i === 0
       ? `📊 Températures en France :\n\n`
       : `📊 Suite des températures :\n\n`;
@@ -32,21 +27,14 @@ async function tweetWeather() {
 
     console.log(`📢 Envoi du tweet ${i + 1}...`);
 
-    if (remainingTweets <= 0) {
-      console.log("❌ Limite de tweets atteinte. Arrêt de l’envoi.");
-      break;
-    }
-
     lastTweetId = await postTweet(tweetMessage, lastTweetId);
 
-    remainingTweets--; // Decrement the remaining tweets
-
-    // Wait 5sc between each tweet to avoid blocking by API
-    await new Promise(resolve => setTimeout(resolve, 5000)); 
+    // Wait 5s between each tweet to avoid blocking by API
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 
   console.log("✅ Tous les tweets ont été envoyés !");
 }
 
-// 📌 Exécuter le bot
+// Run bot
 tweetWeather();
