@@ -22,6 +22,21 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
+      - name: 🚀 Debug Environment Variables
+        run: |
+          echo "🔍 Checking if secrets are available..."
+          echo "TWITTER_API_KEY: ${TWITTER_API_KEY:+✅ Loaded}" || echo "❌ Missing"
+          echo "TWITTER_API_SECRET: ${TWITTER_API_SECRET:+✅ Loaded}" || echo "❌ Missing"
+          echo "TWITTER_ACCESS_TOKEN: ${TWITTER_ACCESS_TOKEN:+✅ Loaded}" || echo "❌ Missing"
+          echo "TWITTER_ACCESS_SECRET: ${TWITTER_ACCESS_SECRET:+✅ Loaded}" || echo "❌ Missing"
+          echo "WEATHER_API_KEY: ${WEATHER_API_KEY:+✅ Loaded}" || echo "❌ Missing"
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+
       - name: 🚀 Run bot
         run: node bot.js
         env:
