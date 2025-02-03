@@ -22,21 +22,6 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🛠️ Vérifier les secrets avant d'exécuter le bot
-        run: |
-          MISSING_SECRETS=0
-          for SECRET in TWITTER_API_KEY TWITTER_API_SECRET TWITTER_ACCESS_TOKEN TWITTER_ACCESS_SECRET WEATHER_API_KEY; do
-            if [ -z "${{ secrets[$SECRET] }}" ]; then
-              echo "❌ Erreur : $SECRET n'est pas défini !"
-              MISSING_SECRETS=1
-            else
-              echo "✅ $SECRET chargé."
-            fi
-          done
-          if [ "$MISSING_SECRETS" -eq 1 ]; then
-            exit 1
-          fi
-
       - name: 🚀 Run bot
         run: node bot.js
         env:
