@@ -4,10 +4,19 @@ import { postTweet } from "./utils/twitter.js";
 async function tweetWeather() {
   console.log("🔄 Fetching weather data...");
 
-  // Get the weather data for all cities
+  // Détermine s'il s'agit du matin ou de l'après-midi
+  const currentHour = new Date().getHours();
+  const isMorning = currentHour < 12;
+
+  // Titre du tweet en fonction de l'heure
+  const tweetTitle = isMorning
+    ? "🌅 Météo France du matin :\n\n"
+    : "🌇 Météo France de l'après-midi :\n\n";
+
+  // Récupération des données météo
   const weatherUpdate = await getSortedWeather();
 
-  // Cut in chunks of 8 cities
+  // Découpe en morceaux de 8 villes
   const chunkSize = 8;
   const tweetChunks = [];
   for (let i = 0; i < weatherUpdate.length; i += chunkSize) {
@@ -17,9 +26,7 @@ async function tweetWeather() {
   let lastTweetId = null;
 
   for (let i = 0; i < tweetChunks.length; i++) {
-    let tweetMessage = i === 0
-      ? `📊 Températures en France :\n\n`
-      : `📊 Suite des températures :\n\n`;
+    let tweetMessage = i === 0 ? tweetTitle : "📊 Suite de la météo :\n\n";
 
     tweetChunks[i].forEach(line => {
       tweetMessage += `${line}\n`;
@@ -29,12 +36,12 @@ async function tweetWeather() {
 
     lastTweetId = await postTweet(tweetMessage, lastTweetId);
 
-    // Wait 5s between each tweet to avoid blocking by API
+    // Pause de 5s entre chaque tweet pour éviter le blocage par l'API
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
 
   console.log("✅ Tous les tweets ont été envoyés !");
 }
 
-// Run bot
+// 📌 Exécuter le bot
 tweetWeather();
