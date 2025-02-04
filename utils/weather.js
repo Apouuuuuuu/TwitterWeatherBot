@@ -52,7 +52,7 @@ const cities = [
 // Get weather data for a city
 async function getWeather(city) {
   if (!apiKey) {
-    console.error("❌ WEATHER_API_KEY is missing in .env file!");
+    console.error("❌ WEATHER_API_KEY is missing in environment variables!");
     return null;
   }
 
@@ -60,18 +60,32 @@ async function getWeather(city) {
 
   try {
     const response = await fetch(url);
-    const data = await response.json();
+    const text = await response.text(); // Récupère la réponse brute
 
-    return {
-      name: city,
-      temperature: data.current.temp_c, // Temperature in °C
-      emoji: getWeatherEmoji(data.current.condition.text), // Weather emoji
-    };
+    // Vérifie si la réponse est bien en JSON
+    try {
+      const data = JSON.parse(text);
+
+      if (data.error) {
+        console.error(`❌ API error for ${city}:`, data.error.message);
+        return null;
+      }
+
+      return {
+        name: city,
+        temperature: data.current.temp_c, // Température en °C
+        emoji: getWeatherEmoji(data.current.condition.text),
+      };
+    } catch (jsonError) {
+      console.error(`❌ Unexpected response from API for ${city}:`, text);
+      return null;
+    }
   } catch (error) {
     console.error(`❌ Error fetching weather for ${city}:`, error);
     return null;
   }
 }
+
 
 function getWeatherEmoji(condition) {
   const conditionLower = condition.toLowerCase();
